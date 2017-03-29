@@ -179,8 +179,10 @@ namespace UMA
 
 		public void SetupOnAwake()
 		{
-			umaRoot = gameObject;
-			animator = umaRoot.GetComponent<Animator>();
+			//This was wrong. Why? Remove? -Kenamis
+			//umaRoot = gameObject;
+			//animator = umaRoot.GetComponent<Animator>();
+			animator = gameObject.GetComponent<Animator>();
 		}
 
 #pragma warning disable 618

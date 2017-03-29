@@ -19,6 +19,13 @@ namespace UMA
 
 		protected void EnsureUMADataSetup(UMAData umaData)
 		{
+			if (umaData.umaRoot == null) 
+			{
+				Transform found = umaData.gameObject.transform.FindChild ("Root");
+				if (found)
+					umaData.umaRoot = found.gameObject;
+			}
+
 			if (umaData.umaRoot == null)
 			{
 				GameObject newRoot = new GameObject("Root");
