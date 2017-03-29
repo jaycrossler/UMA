@@ -39,28 +39,36 @@ namespace UMA
 		/// <value>The bone count.</value>
 		public virtual int boneCount { get { return boneHashData.Count; } }
 
-		private List<BoneData> boneHashDataBackup = new List<BoneData>();
-		private Dictionary<int, BoneData> boneHashDataLookup;
+		[Serializable]
+		public class BoneHashDictionary : SerializableDictionary<int, BoneData>{};
 
+		private List<BoneData> boneHashDataBackup = new List<BoneData>();
+
+		[SerializeField]
+		private BoneHashDictionary boneHashDataLookup;
+
+		[SerializeField]
 		private Dictionary<int, BoneData> boneHashData
 		{
 			get
 			{
 				if (boneHashDataLookup == null)
 				{
-					boneHashDataLookup = new Dictionary<int, BoneData>();
+					boneHashDataLookup = BoneHashDictionary.New<BoneHashDictionary> ();
 					foreach (BoneData tData in boneHashDataBackup)
 					{
-						boneHashDataLookup.Add(tData.boneNameHash, tData);
+						boneHashDataLookup.dictionary.Add(tData.boneNameHash, tData);
 					}
 				}
 
-				return boneHashDataLookup;
+				return boneHashDataLookup.dictionary;
 			}
 
 			set
 			{
-				boneHashDataLookup = value;
+				if (boneHashDataLookup == null)
+					boneHashDataLookup = BoneHashDictionary.New<BoneHashDictionary> ();
+				boneHashDataLookup.dictionary = value;
 				boneHashDataBackup = new List<BoneData>(value.Values);
 			}
 		}
