@@ -5,6 +5,7 @@ using UnityEditor.SceneManagement;
 using UMA;
 using UMACharacterSystem;
 using System;
+using System.IO;
 
 [CustomEditor(typeof(DynamicCharacterAvatar), true)]
 public partial class DynamicCharacterAvatarEditor : Editor
@@ -15,6 +16,8 @@ public partial class DynamicCharacterAvatarEditor : Editor
     protected RaceSetterPropertyDrawer _racePropDrawer = new RaceSetterPropertyDrawer();
 	protected WardrobeRecipeListPropertyDrawer _wardrobePropDrawer = new WardrobeRecipeListPropertyDrawer();
 	protected RaceAnimatorListPropertyDrawer _animatorPropDrawer = new RaceAnimatorListPropertyDrawer();
+
+	private List<string> AdditionRecipesGUIDs = new List<string> ();
 
 	public void OnEnable()
     {
@@ -48,6 +51,8 @@ public partial class DynamicCharacterAvatarEditor : Editor
 		{
 			_animatorPropDrawer.thisDCA = thisDCA;
 		}
+
+		BuildAdditionalRecipesCheckList ();
 	}
 
 	public void SetNewColorCount(int colorCount)
@@ -368,6 +373,7 @@ public partial class DynamicCharacterAvatarEditor : Editor
 			EditorGUILayout.PropertyField(umaGenerator);
 			EditorGUILayout.Space();
 			EditorGUILayout.PropertyField(umaRecipe);
+			ShowAdditionalRecipesCheckList ();
 			EditorGUILayout.PropertyField(umaAdditionalRecipes, true);
 			EditorGUILayout.PropertyField(animationController);
 			EditorGUILayout.PropertyField(serializedObject.FindProperty("BoundsOffset"));
@@ -424,5 +430,68 @@ public partial class DynamicCharacterAvatarEditor : Editor
             EditorGUI.EndDisabledGroup();
         }
     }
+
+	private void BuildAdditionalRecipesCheckList ()
+	{
+		string[] folder = new string[1];
+		folder[0] = "Assets/UMA/Examples/Main Examples/Assets/AdditionalSlots";
+		string assetType = "t:UMATextRecipe";
+
+		string[] results = AssetDatabase.FindAssets ( assetType, folder );
+
+		AdditionRecipesGUIDs.Clear ();
+		AdditionRecipesGUIDs.AddRange (results);
+	}
+
+	private void ShowAdditionalRecipesCheckList()
+	{
+		foreach (string guid in AdditionRecipesGUIDs) 
+		{
+			string path = AssetDatabase.GUIDToAssetPath (guid);
+			string name = Path.GetFileNameWithoutExtension (path);
+
+			bool inList = false;
+			for (int i = 0; i < thisDCA.umaAdditionalRecipes.Length; i++) 
+			{
+				if (thisDCA.umaAdditionalRecipes [i].name == name) 
+				{
+					inList = true;
+					break;
+				}
+			}
+
+			if (EditorGUILayout.Toggle (name, inList)) 
+			{
+				//Should be in list
+				if (!inList) 
+				{
+					//Add
+					UMARecipeBase[] newList = new UMARecipeBase[thisDCA.umaAdditionalRecipes.Length+1];
+					thisDCA.umaAdditionalRecipes.CopyTo (newList, 0);
+					thisDCA.umaAdditionalRecipes = newList;
+					thisDCA.umaAdditionalRecipes [thisDCA.umaAdditionalRecipes.Length - 1] = (UMARecipeBase)AssetDatabase.LoadAssetAtPath (path, typeof(UMATextRecipe));
+				}
+			} 
+			else 
+			{
+				//Should not be in the list
+				if (inList) 
+				{
+					//Remove
+					UMARecipeBase[] newList = new UMARecipeBase[thisDCA.umaAdditionalRecipes.Length-1];
+					int index = 0;
+					foreach (UMARecipeBase recipe in thisDCA.umaAdditionalRecipes) 
+					{
+						if (recipe.name != name) 
+						{
+							newList [index] = recipe;
+							index++;
+						}
+					}
+					thisDCA.umaAdditionalRecipes = newList;
+				}
+			}
+		}
+	}
 }
 
