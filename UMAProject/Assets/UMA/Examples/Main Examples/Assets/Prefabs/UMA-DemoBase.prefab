@@ -31,7 +31,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &135466
 GameObject:
   m_ObjectHideFlags: 0
@@ -334,7 +334,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 30819781a55e5b540abd5f8a35901ca2, type: 2}
   - {fileID: 11400000, guid: 63212701cc50fca4eac77618947eb849, type: 2}
   - {fileID: 11400000, guid: f3ed1216fb09ee24f83e35b72805413f, type: 2}
-  - {fileID: 11400000, guid: fcd8d6062a368b1468c653298da45409, type: 2}
   - {fileID: 11400000, guid: b50b1d40e34242d4da5d97c1e5f8804e, type: 2}
   - {fileID: 11400000, guid: 5746c09014733de4bbf208291c61aaea, type: 2}
   - {fileID: 11400000, guid: 03e5bfa4f7f2fd445974ed61bdf5d9cf, type: 2}
@@ -407,10 +406,10 @@ MonoBehaviour:
   textureMerge: {fileID: 0}
   convertRenderTexture: 0
   convertMipMaps: 1
-  atlasResolution: 4096
+  atlasResolution: 2048
   textureMergePrefab: {fileID: 400002, guid: b67c04ae1c362e94e9e8c5505c381525, type: 2}
   meshCombiner: {fileID: 11454414}
-  InitialScaleFactor: 1
+  InitialScaleFactor: 2
   fastGeneration: 1
   garbageCollectionRate: 8
 --- !u!114 &11485398
@@ -448,17 +447,17 @@ MonoBehaviour:
   CharacterCreated:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UMA.UMADataEvent, Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral,
+    m_TypeName: UMA.UMADataEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   CharacterDestroyed:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UMA.UMADataEvent, Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral,
+    m_TypeName: UMA.UMADataEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   CharacterUpdated:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UMA.UMADataEvent, Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral,
+    m_TypeName: UMA.UMADataEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
 --- !u!114 &11489196
 MonoBehaviour:
@@ -486,7 +485,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 98c6dc40a5e2e4f3f92aabfafaf67c78, type: 2}
   - {fileID: 11400000, guid: 0fbc0a0bbfb29084bbeafb0876b6e28b, type: 2}
   - {fileID: 11400000, guid: 8b232fbd9c99b3149bc6c4f6cb7afb7d, type: 2}
-  - {fileID: 11400000, guid: 6108027a16d0c6a4695e8dca667e4170, type: 2}
   - {fileID: 11400000, guid: b1b568e08910dda4a914ad64a0fa75c8, type: 2}
   - {fileID: 11400000, guid: b520f86d1223e3b4999507cee7b6958c, type: 2}
   - {fileID: 11400000, guid: fe973a02183b3894296cc24e40283fde, type: 2}

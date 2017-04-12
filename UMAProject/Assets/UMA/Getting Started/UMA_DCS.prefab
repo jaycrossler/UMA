@@ -176,7 +176,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 160156}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.8348756, y: 1.1364161, z: 1.2319071}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
@@ -308,10 +308,10 @@ MonoBehaviour:
   textureMerge: {fileID: 0}
   convertRenderTexture: 0
   convertMipMaps: 1
-  atlasResolution: 4096
+  atlasResolution: 2048
   textureMergePrefab: {fileID: 400002, guid: b67c04ae1c362e94e9e8c5505c381525, type: 2}
   meshCombiner: {fileID: 11456094}
-  InitialScaleFactor: 1
+  InitialScaleFactor: 2
   fastGeneration: 1
   garbageCollectionRate: 8
 --- !u!114 &11456094
