@@ -887,6 +887,10 @@ namespace UMACharacterSystem
 					}
 				}
 			}
+			else //make sure the downloading collection is still added to _wardrobeCollections, otherwise it wont be processed in UpdateAfterDownload -> UpdateSetSlots
+			{
+				_wardrobeCollections.Add(uwr.wardrobeSlot, uwr);
+			}
 		}
 		/// <summary>
 		/// Clears the given wardrobe slot of any recipes that have been set on the Avatar
@@ -3121,7 +3125,6 @@ namespace UMACharacterSystem
 						if (animators[i].animatorControllerName == foundControllers[fi].name)
 						{
 							animators[i].animatorController = foundControllers[fi];
-							break;
 						}
 					}
 				}
