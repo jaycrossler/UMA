@@ -27,12 +27,29 @@ public partial class UMAContext : MonoBehaviour
 			return null;
 		}
 		Debug.Log("UMA Recipe Editor created an UMAEditorContext to enable editing. This will auto delete once you have finished editing your recipe or you add the UMA_DCS prefab to this scene.");
-		//if there is already an EditorUMAContext use it
+		//if there is already an UMAEditorContext use it
 		if (UMAContext.FindInstance() != null)
 		{
 			if (UMAContext.FindInstance().gameObject.name == "UMAEditorContext")
 			{
 				EditorUMAContext = UMAContext.FindInstance().gameObject;
+				//if the UMAContext itself is on this game object, it means this was created and not deleted by the previous version of 'CreateEditorContext'
+				//(The new version creates the UMAContext on a child game object called 'UMAContext' so that UMAContext.FindInstance can find it properly)
+				//so in this case delete all the components that would have been added from the found gameObject from the previous code
+				if (EditorUMAContext.GetComponent<UMAContext>())
+				{
+					Destroy(EditorUMAContext.GetComponent<UMAContext>());//should also make the instance null again
+					if (EditorUMAContext.GetComponent<DynamicRaceLibrary>())
+						Destroy(EditorUMAContext.GetComponent<DynamicRaceLibrary>());
+					if (EditorUMAContext.GetComponent<DynamicSlotLibrary>())
+						Destroy(EditorUMAContext.GetComponent<DynamicSlotLibrary>());
+					if (EditorUMAContext.GetComponent<DynamicOverlayLibrary>())
+						Destroy(EditorUMAContext.GetComponent<DynamicOverlayLibrary>());
+					if (EditorUMAContext.GetComponent<DynamicCharacterSystem>())
+						Destroy(EditorUMAContext.GetComponent<DynamicCharacterSystem>());
+					if (EditorUMAContext.GetComponent<DynamicAssetLoader>())
+						Destroy(EditorUMAContext.GetComponent<DynamicAssetLoader>());
+				}
 			}
 			else if (UMAContext.FindInstance().gameObject.transform.parent.gameObject.name == "UMAEditorContext")
 			{
