@@ -537,8 +537,8 @@ namespace UMA
             }
             LoadedAssetBundle loadedBundle = AssetBundleManager.GetLoadedAssetBundle(bundle, out error);
             float elapsedTime = Time.realtimeSinceStartup - startTime;
-            Debug.Log(bundle + (error != null ? " was not" : " was") + " loaded successfully in " + elapsedTime + " seconds");
-            if (error != null)
+            Debug.Log(bundle + (!String.IsNullOrEmpty(error) ? " was not" : " was") + " loaded successfully in " + elapsedTime + " seconds");
+            if (!String.IsNullOrEmpty(error))
             {
                 Debug.LogError("[DynamicAssetLoader] Bundle Load Error: " + error);
                 yield break;

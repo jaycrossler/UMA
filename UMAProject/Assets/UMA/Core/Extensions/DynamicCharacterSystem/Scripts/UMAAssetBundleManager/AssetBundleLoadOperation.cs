@@ -153,7 +153,7 @@ namespace UMAAssetBundleManager
         protected override void FinishDownload()
         {
             error = request.error;
-            if (error != null)
+            if (!String.IsNullOrEmpty(error))
                 return;
 
             var path = "res://" + assetBundleName;
@@ -548,7 +548,7 @@ namespace UMAAssetBundleManager
 		{
 			// Return if meeting downloading error.
 			// m_DownloadingError might come from the dependency downloading.
-			if (m_Request == null && m_DownloadingError != null)
+			if (m_Request == null && !string.IsNullOrEmpty(m_DownloadingError))
 			{
 				Debug.LogError(m_DownloadingError);
 				return true;
@@ -634,7 +634,7 @@ namespace UMAAssetBundleManager
 		{
 			// Return if meeting downloading error.
 			// m_DownloadingError might come from the dependency downloading.
-			if (m_Request == null && m_DownloadingError != null)
+			if (m_Request == null && !string.IsNullOrEmpty(m_DownloadingError))
 			{
 				Debug.LogError(m_DownloadingError);
 				return true;
