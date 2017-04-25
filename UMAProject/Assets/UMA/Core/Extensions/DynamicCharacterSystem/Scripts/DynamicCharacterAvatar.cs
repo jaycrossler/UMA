@@ -509,7 +509,9 @@ namespace UMACharacterSystem
 			}
 			//calling activeRace.data causes RaceLibrary to gather all racedatas from resources an returns all those along with any temporary assetbundle racedatas that are downloading
 			//It will not cause any races to actually download
-			if (activeRace.data != null)
+			//**Fix bug introduced in commit cf12f52 **//
+			//ImportSettingsCO might have changed the activeRace.name so we may still need to change the actual racedata if activeRace.racedata.raceName is different
+			if (activeRace.data != null && activeRace.name == activeRace.racedata.raceName)
 			{
 				activeRace.name = activeRace.racedata.raceName;
 				umaRecipe = activeRace.racedata.baseRaceRecipe;
@@ -1511,20 +1513,14 @@ namespace UMACharacterSystem
 		/// </summary>
 		public void SetAnimatorController(bool addAnimator = false)
 		{
-			//int validControllers = raceAnimationControllers.Validate().Count;//triggers resources load or asset bundle download of any animators that are in resources/asset bundles
-
 			RuntimeAnimatorController controllerToUse = raceAnimationControllers.GetAnimatorForRace(activeRace.name);
-			/*if (validControllers > 0)
-			{
-				foreach (RaceAnimator raceAnimator in raceAnimationControllers.animators)
-				{
-					if (raceAnimator.raceName == activeRace.name && raceAnimator.animatorController != null)
-					{
-						controllerToUse = raceAnimator.animatorController;
-						break;
-					}
-				}
-			}*/
+
+			//changing the animationController in 5.6 resets the rotation of this game object
+			//so store the rotation and set it back
+			var originalRot = Quaternion.identity;
+			if (umaData != null)
+				originalRot = umaData.transform.localRotation;
+
 			animationController = controllerToUse;
 			var thisAnimator = gameObject.GetComponent<Animator>();
 			if (controllerToUse != null)
@@ -1548,6 +1544,8 @@ namespace UMACharacterSystem
 					thisAnimator.runtimeAnimatorController = null;
 				}
 			}
+			if (umaData != null)
+				umaData.transform.localRotation = originalRot;
 		}
 
 		#endregion
