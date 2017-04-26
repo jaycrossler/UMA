@@ -153,7 +153,7 @@ namespace UMAAssetBundleManager
         protected override void FinishDownload()
         {
             error = request.error;
-            if (!String.IsNullOrEmpty(error))
+            if (!string.IsNullOrEmpty(error))
                 return;
 
             var path = "res://" + assetBundleName;
