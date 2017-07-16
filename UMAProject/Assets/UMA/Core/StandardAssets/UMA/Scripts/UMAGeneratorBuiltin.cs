@@ -1,7 +1,6 @@
 using System;
 using UnityEngine;
 using System.Collections.Generic;
-using Object = UnityEngine.Object;
 
 namespace UMA
 {
@@ -60,6 +59,9 @@ namespace UMA
 
 			if (atlasResolution == 0)
 				atlasResolution = 256;
+
+			if (defaultOverlayAsset != null)
+				_defaultOverlayData = new OverlayData (defaultOverlayAsset);
 
 			if (!textureMerge)
 			{
@@ -138,7 +140,7 @@ namespace UMA
 		}
 
 #pragma warning disable 618
-		private void RebuildAllRenderTextures()
+		public void RebuildAllRenderTextures()
 		{
 			var activeUmaData = umaData;
 			var storedGeneratorCoroutine = activeGeneratorCoroutine;
@@ -230,18 +232,18 @@ namespace UMA
 				if (!fastGeneration)
 					return false;
 			}
-			else
-			{
-				umaData.skeleton.BeginSkeletonUpdate();
-			}
 
 			if (umaData.isShapeDirty) 
 			{
+				if (!umaData.skeleton.isUpdating)
+				{
+					umaData.skeleton.BeginSkeletonUpdate();
+				}
 				UpdateUMABody(umaData);
 				umaData.isShapeDirty = false;
 				DnaChanged++;
 			} 
-			else
+			else if (umaData.skeleton.isUpdating)
 			{
 				umaData.skeleton.EndSkeletonUpdate();
 			}

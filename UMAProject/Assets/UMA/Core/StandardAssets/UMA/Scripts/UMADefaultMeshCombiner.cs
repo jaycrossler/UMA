@@ -55,7 +55,11 @@ namespace UMA
 			else
 			{
 				umaData.CleanMesh(false);
-				if (umaData.rendererCount != umaData.generatedMaterials.rendererCount)
+				if (umaData.rendererCount == umaData.generatedMaterials.rendererCount)
+				{
+					renderers = umaData.GetRenderers();
+				}
+				else
 				{
 					var oldRenderers = umaData.GetRenderers();
 					var globalTransform = umaData.GetGlobalTransform();
@@ -76,7 +80,9 @@ namespace UMA
 					{
 						for (int i = umaData.generatedMaterials.rendererCount; i < oldRenderers.Length; i++)
 						{
-							Destroy(oldRenderers[i]);
+                            Destroy(oldRenderers[i].gameObject);
+                            //For cloth, be aware of issue: 845868
+                            //https://issuetracker.unity3d.com/issues/cloth-repeatedly-destroying-objects-with-cloth-components-causes-a-crash-in-unity-cloth-updatenormals
 						}
 					}
 					umaData.SetRenderers(renderers);
@@ -142,7 +148,7 @@ namespace UMA
 				}
 				else
 				{
-					SkinnedMeshCombiner.CombineMeshes(umaMesh, combinedMeshList.ToArray());
+                    SkinnedMeshCombiner.CombineMeshes(umaMesh, combinedMeshList.ToArray(), umaData.blendShapeSettings );
 
 					if (updatedAtlas)
 					{

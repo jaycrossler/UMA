@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEditor;
-using UMA.Integration.PowerTools;
 
 namespace UMA.Integrations.PowerTools
 {

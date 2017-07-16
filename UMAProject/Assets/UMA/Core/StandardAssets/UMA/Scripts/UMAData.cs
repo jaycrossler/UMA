@@ -72,7 +72,7 @@ namespace UMA
 		/// </summary>
 		public bool isAtlasDirty;
 
-		public bool ignoreBlendShapes = false;
+        public BlendShapeSettings blendShapeSettings = new BlendShapeSettings();
 
 		public RuntimeAnimatorController animationController;
 
@@ -100,7 +100,7 @@ namespace UMA
 
 		public Transform GetGlobalTransform()
 		{
-			return (renderers != null && renderers.Length > 0) ? renderers[0].rootBone : umaRoot.transform.FindChild("Global");
+			return (renderers != null && renderers.Length > 0) ? renderers[0].rootBone : umaRoot.transform.Find("Global");
 		}
 
 		public void RegisterAnimatedBoneHierarchy(int hash)
@@ -128,9 +128,14 @@ namespace UMA
 		/// Callback event when character has been destroyed.
 		/// </summary>
 		public event Action<UMAData> OnCharacterDestroyed { add { if (CharacterDestroyed == null) CharacterDestroyed = new UMADataEvent(); CharacterDestroyed.AddListener(new UnityAction<UMAData>(value)); } remove { CharacterDestroyed.RemoveListener(new UnityAction<UMAData>(value)); } }
+
+		/// Callback event when character DNA has been updated.
+		/// </summary>
+		public event Action<UMAData> OnCharacterDnaUpdated { add { if (CharacterDnaUpdated == null) CharacterDnaUpdated = new UMADataEvent(); CharacterDnaUpdated.AddListener(new UnityAction<UMAData>(value)); } remove { CharacterDnaUpdated.RemoveListener(new UnityAction<UMAData>(value)); } }
 		public UMADataEvent CharacterCreated;
 		public UMADataEvent CharacterDestroyed;
 		public UMADataEvent CharacterUpdated;
+		public UMADataEvent CharacterDnaUpdated;
 
 		public GameObject umaRoot;
 
@@ -223,7 +228,11 @@ namespace UMA
 			}
 
 #if UNITY_EDITOR
-			if (!valid && UnityEditor.EditorApplication.isPlaying) UnityEditor.EditorApplication.isPaused = true;
+			if (!valid && UnityEditor.EditorApplication.isPlaying)
+            {
+                Debug.LogError("UMAData: Recipe or Generator is not valid!");
+                UnityEditor.EditorApplication.isPaused = true;
+            }
 #endif
 
 			return valid;
@@ -594,10 +603,10 @@ namespace UMA
 			/// </summary>
 			/// <param name="slot">Slot.</param>
 			/// <param name="dontSerialize">If set to <c>true</c> slot will not be serialized.</param>
-			public void MergeSlot(SlotData slot, bool dontSerialize)
+			public SlotData MergeSlot(SlotData slot, bool dontSerialize)
 			{
 				if ((slot == null) || (slot.asset == null))
-					return;
+					return null;
 
 				int overlayCount = 0;
 				for (int i = 0; i < slotDataList.Length; i++)
@@ -640,7 +649,7 @@ namespace UMA
 							}
 						}
 						originalSlot.dontSerialize = dontSerialize;
-						return;
+						return originalSlot;
 					}
 				}
 
@@ -664,6 +673,7 @@ namespace UMA
 				}
 				slotDataList[insertIndex] = slotCopy;
 				MergeMatchingOverlays();
+                return slotCopy;
 			}
 
 			/// <summary>
@@ -856,6 +866,11 @@ namespace UMA
 						}
                     }
 				}
+				foreach (int addedDNAHash in umaDnaConverter.Keys)
+				{
+					requiredDnas.Add(addedDNAHash);
+				}
+
 				//now remove any we no longer need
 				var keysToRemove = new List<int>();
 				foreach(var kvp in umaDna)
@@ -1320,11 +1335,8 @@ namespace UMA
 				{
 					var bone = tpose.boneInfo[i];
 					var hash = UMAUtils.StringToHash(bone.name);
-					var go = skeleton.GetBoneGameObject(hash);
-					if (go == null) continue;
-					skeleton.SetPosition(hash, bone.position);
-					skeleton.SetRotation(hash, bone.rotation);
-					skeleton.SetScale(hash, bone.scale);
+					if (!skeleton.HasBone(hash)) continue;
+					skeleton.Set(hash, bone.position, bone.scale, bone.rotation);
 				}
 			}
 		}
@@ -1358,6 +1370,11 @@ namespace UMA
 		/// </summary>
 		public void FireDNAAppliedEvents()
 		{
+			if (CharacterDnaUpdated != null)
+			{
+				CharacterDnaUpdated.Invoke(this);
+			}
+			
 			foreach (var slotData in umaRecipe.slotDataList)
 			{
 				if (slotData != null && slotData.asset.DNAApplied != null)
@@ -1399,6 +1416,18 @@ namespace UMA
 		}
 
 		#region BlendShape Support
+        public class BlendShapeSettings
+        {
+            public bool ignoreBlendShapes; //default false
+            public Dictionary<string,float> bakeBlendShapes;
+
+            public BlendShapeSettings()
+            {
+                ignoreBlendShapes = false;
+                bakeBlendShapes = new Dictionary<string, float>();
+            }
+        }
+
 		//For future multiple renderer support
 		public struct BlendShapeLocation
 		{
@@ -1510,6 +1539,7 @@ namespace UMA
 			Debug.LogError ("GetBlendShapeName: no blendshape at index " + shapeIndex + "!");
 			return "";
 		}
+			
 		#endregion
 	}
 }

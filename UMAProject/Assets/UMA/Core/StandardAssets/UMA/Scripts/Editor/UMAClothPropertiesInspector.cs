@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
-namespace UMA
+namespace UMA.Editors
 {
 	[CustomEditor(typeof(UMAClothProperties))]
 	public class UMAClothPropertiesInspector : Editor

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
 
 namespace UMA
@@ -47,7 +46,8 @@ namespace UMA
 		[SerializeField]
 		private BoneHashDictionary boneHashDataLookup;
 
-		[SerializeField]
+        public bool isUpdating { get { return updating; } }
+
 		private Dictionary<int, BoneData> boneHashData
 		{
 			get
@@ -55,10 +55,12 @@ namespace UMA
 				if (boneHashDataLookup == null)
 				{
 					boneHashDataLookup = BoneHashDictionary.New<BoneHashDictionary> ();
+#if UNITY_EDITOR
 					foreach (BoneData tData in boneHashDataBackup)
 					{
 						boneHashDataLookup.dictionary.Add(tData.boneNameHash, tData);
 					}
+#endif
 				}
 
 				return boneHashDataLookup.dictionary;
@@ -69,7 +71,9 @@ namespace UMA
 				if (boneHashDataLookup == null)
 					boneHashDataLookup = BoneHashDictionary.New<BoneHashDictionary> ();
 				boneHashDataLookup.dictionary = value;
+#if UNITY_EDITOR
 				boneHashDataBackup = new List<BoneData>(value.Values);
+#endif
 			}
 		}
 
@@ -143,7 +147,9 @@ namespace UMA
 			};
 
 			boneHashData.Add(hash, data);
+#if UNITY_EDITOR
 			boneHashDataBackup.Add(data);
+#endif
 
 			for (int i = 0; i < transform.childCount; i++)
 			{
@@ -186,8 +192,10 @@ namespace UMA
 				umaTransform = new UMATransform(transform, hash, parentHash),
 			};
 
-			boneHashDataBackup.Add(newBone);
 			boneHashData.Add(hash, newBone);
+#if UNITY_EDITOR
+			boneHashDataBackup.Add(newBone);
+#endif
 		}
 
 		/// <summary>
@@ -206,8 +214,10 @@ namespace UMA
 				umaTransform = transform.Duplicate(),
 			};
 
-			boneHashDataBackup.Add(newBone);
 			boneHashData.Add(transform.hash, newBone);
+#if UNITY_EDITOR
+			boneHashDataBackup.Add(newBone);
+#endif
 		}
 
 		/// <summary>
@@ -219,8 +229,10 @@ namespace UMA
 			BoneData bd = GetBone(nameHash);
 			if (bd != null)
 			{
-				boneHashDataBackup.Remove(bd);
 				boneHashData.Remove(nameHash);
+#if UNITY_EDITOR
+				boneHashDataBackup.Remove(bd);
+#endif
 			}
 		}
 
