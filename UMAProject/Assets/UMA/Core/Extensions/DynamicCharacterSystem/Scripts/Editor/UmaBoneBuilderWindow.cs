@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using UMA;
-using UMACharacterSystem;
+using UMA.CharacterSystem;
 
-namespace UMAEditor
+namespace UMA.Editors
 {
 	public class UmaBoneBuilderWindow : EditorWindow 
 	{
